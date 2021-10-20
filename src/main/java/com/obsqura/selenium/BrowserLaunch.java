@@ -6,13 +6,13 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class BrowserLaunch {
-    WebDriver driver;
-    public void testInitialize(String browser) {
-        if(browser.equalsIgnoreCase("chrome")){
-            System.setProperty("webdriver.chrome.driver","C:\\selenium\\driverfiles\\chromedriver_win32\\chromedriver.exe");
+    static WebDriver driver;
+    public static void testInitialize(String browser) {
+        if (browser.equalsIgnoreCase("chrome")) {
+            System.setProperty("webdriver.chrome.driver", "C:\\selenium\\driverfiles\\chromedriver_win32\\chromedriver.exe");
             driver = new ChromeDriver();
         }
-        if (browser.equalsIgnoreCase("firefox")){
+        else if (browser.equalsIgnoreCase("firefox")){
             System.setProperty("webdriver.gecko.driver","C:\\selenium\\driverfiles\\geckodriver-v0.30.0-win64\\geckodriver.exe");
             driver = new FirefoxDriver();
         }
@@ -21,15 +21,17 @@ public class BrowserLaunch {
             driver = new EdgeDriver();
         }
         driver.manage().window().maximize();
+        driver.manage().deleteAllCookies();
         driver.get("http://demo.guru99.com/test/newtours/");
-        driver.close();
     }
     public static void main(String[] args) {
-        BrowserLaunch launch = new BrowserLaunch();
-        launch.testInitialize("chrome");
-        launch.testInitialize("edge");
-        launch.testInitialize("firefox");
+        BrowserLaunch.testInitialize("chrome");
+        String title = driver.getTitle();
+        System.out.println(title);
+        String url = driver.getCurrentUrl();
+        System.out.println(url);
+        String source = driver.getPageSource();
+        System.out.println(source);
+        driver.close();
     }
-
-
 }
