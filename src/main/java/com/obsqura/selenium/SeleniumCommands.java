@@ -7,6 +7,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.util.List;
+
 public class SeleniumCommands {
     static WebDriver driver;
     public static void testInitialize(String browser) {
@@ -29,7 +31,7 @@ public class SeleniumCommands {
     }
     public static void main(String[] args) {
         SeleniumCommands.testInitialize("chrome");
-        WebElement loginMenu = driver.findElement(By.className("ico-login"));
+        /*WebElement loginMenu = driver.findElement(By.className("ico-login"));
         loginMenu.click();
         WebElement rememberMe = driver.findElement(By.id("RememberMe"));
         boolean rememberStatus = rememberMe.isEnabled();
@@ -38,10 +40,19 @@ public class SeleniumCommands {
         boolean loginEnable = login.isEnabled();
         System.out.println("Enable status of login button - "+loginEnable);
         boolean loginDisplay = login.isDisplayed();
-        System.out.println("Display status of login button - "+loginDisplay);
-        /*WebElement registerMenu = driver.findElement(By.className("ico-register"));
+        System.out.println("Display status of login button - "+loginDisplay);*/
+        WebElement registerMenu = driver.findElement(By.className("ico-register"));
         registerMenu.click();
-        WebElement femaleRadioButton = driver.findElement(By.id("gender-female"));
+        List<WebElement> genders = driver.findElements(By.name("Gender"));
+        for (int i = 0;i<genders.size();i++)
+        {
+            String value = genders.get(i).getAttribute("id");
+            if(value.equals("gender-female"))
+            {
+                genders.get(i).click();
+            }
+        }
+        /*WebElement femaleRadioButton = driver.findElement(By.id("gender-female"));
         femaleRadioButton.click();
         boolean status = femaleRadioButton.isSelected();
         System.out.println("Radio button status - "+status);
