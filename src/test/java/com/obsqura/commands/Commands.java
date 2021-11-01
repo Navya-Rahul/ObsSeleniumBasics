@@ -1,8 +1,6 @@
 package com.obsqura.commands;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -10,6 +8,8 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class Commands {
     WebDriver driver;
@@ -37,7 +37,7 @@ public class Commands {
     @AfterMethod
     public void tearDown()
     {
-        //driver.close();
+        driver.close();
     }
     @Test(priority = 1,enabled = false)
     public void verifyUserLogin()
@@ -65,7 +65,7 @@ public class Commands {
         String expectedTitle = "Demo Web Shop";
         Assert.assertEquals(actualTitle,expectedTitle,"INVALID HOMEPAGE TITLE");
     }
-    @Test(priority = 3,enabled = true)
+    @Test(priority = 3,enabled = false)
     public void verifyFileUpload()
     {
         driver.get("https://demo.guru99.com/test/upload/");
@@ -75,6 +75,79 @@ public class Commands {
         accept.click();
         WebElement submit = driver.findElement(By.id("submitbutton"));
         submit.click();
+    }
+    @Test(priority = 4,enabled = false)
+    public void verifyConfirmationAlert()
+    {
+        driver.get("http://demo.guru99.com/test/delete_customer.php");
+        WebElement customerId = driver.findElement(By.name("cusid"));
+        customerId.sendKeys("1234");
+        WebElement submit = driver.findElement(By.name("submit"));
+        submit.click();
+        Alert alert = driver.switchTo().alert();
+        //alert.accept();
+        //alert.dismiss();
+        String alertText = alert.getText();
+        alert.accept();
+        System.out.println(alertText);
+    }
+    @Test(priority = 5,enabled = false)
+    public void verifySimpleAlert()
+    {
+        driver.get("https://demoqa.com/alerts");
+        WebElement alertOne = driver.findElement(By.id("alertButton"));
+        alertOne.click();
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+    @Test(priority = 6,enabled = false)
+    public void verifyAlertAfterFiveSeconds() throws InterruptedException {
+        driver.get("https://demoqa.com/alerts");
+        WebElement alertTwo = driver.findElement(By.id("timerAlertButton"));
+        alertTwo.click();
+        Thread.sleep(5000);
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+    @Test(priority = 7,enabled = false)
+    public void verifyToolsQAConfirmationAlert()
+    {
+        driver.get("https://demoqa.com/alerts");
+        WebElement alertThree = driver.findElement(By.id("confirmButton"));
+        alertThree.click();
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+    @Test(priority = 7)
+    public void verifypromptAlert()
+    {
+        driver.get("https://demoqa.com/alerts");
+        WebElement alertThree = driver.findElement(By.id("promtButton"));
+        alertThree.click();
+        Alert alert = driver.switchTo().alert();
+        alert.sendKeys("Rithul");
+        alert.accept();
+    }
+    @Test(priority = 8,enabled = false)
+    public void verifyFramesInHtml() {
+        driver.get("https://demoqa.com/frames");
+        //driver.switchTo().frame("frame1");
+        //driver.switchTo().frame(1);
+        WebElement frame = driver.findElement(By.id("frame1"));
+        driver.switchTo().frame(frame);
+        WebElement frameOneText = driver.findElement(By.id("sampleHeading"));
+        String frameText = frameOneText.getText();
+        System.out.println(frameText);
+        //driver.switchTo().parentFrame();
+        driver.switchTo().defaultContent();
+    }
+    @Test(priority = 9,enabled = false)
+    public void verifyTotalNumberOfFrames()
+    {
+        driver.get("https://demoqa.com/frames");
+        List<WebElement> frame = driver.findElements(By.tagName("iframe"));
+        int totalFrames = frame.size();
+        System.out.println(totalFrames);
     }
 }
 
