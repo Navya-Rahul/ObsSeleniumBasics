@@ -4,11 +4,13 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -210,15 +212,77 @@ public class Commands {
         valueTwo.sendKeys("20");
         WebElement getTotal = driver.findElement(By.id("button-two"));
         getTotal.click();
-
+        WebElement resultSection = driver.findElement(By.id("message-two"));
+        String tempResult = resultSection.getText();
+        String actualResult = tempResult.substring(14);
+        String expectedResult = "30";
+        Assert.assertEquals(actualResult,expectedResult,"Addition result is not matching");
     }
-    @Test(priority = 15)
+    @Test(priority = 15,enabled = false)
     public void verifyMultipleCheckboxDemo()
     {
         driver.get("https://selenium.obsqurazone.com/check-box-demo.php");
         WebElement button = driver.findElement(By.id("button-two"));
         String actualValue = driver.findElement(By.id("is_checked")).getAttribute("value");
         Assert.assertEquals(actualValue,"true","Checkbox is not selected");
+    }
+    @Test(priority = 16,enabled = false)
+    public void verifyDropdowns()
+    {
+        driver.get("http://demo.guru99.com/test/newtours/register.php");
+        WebElement dropdown = driver.findElement(By.name("country"));
+        Select select = new Select(dropdown);
+        //select.selectByVisibleText("INDIA");
+        //select.selectByValue("INDIA");
+        select.selectByIndex(10);
+    }
+    @Test(priority = 17,enabled = false)
+    public void verifyDropdownValues()
+    {
+        driver.get("https://selenium.obsqurazone.com/select-input.php");
+        List<String> expectedColorValues = new ArrayList<String>();
+        expectedColorValues.add("Red");
+        expectedColorValues.add("Yellow");
+        expectedColorValues.add("Green");
+        WebElement colorDropdown = driver.findElement(By.id("single-input-field"));
+        Select select = new Select(colorDropdown);
+        List<WebElement> actualColorWebElements = select.getOptions();
+        List<String> actualColorValues = new ArrayList<String>();
+        for(int i = 1;i < actualColorValues.size();i++)
+        {
+            actualColorValues.add(actualColorWebElements.get(i).getText());
+        }
+        System.out.println(actualColorValues);
+        Assert.assertEquals(actualColorValues,expectedColorValues,"Dropdown value mismatch found in color list selection");
+    }
+    @Test(priority = 18,enabled = true)
+    public void verifyMultipleDropdowns()
+    {
+        driver.get("https://selenium.obsqurazone.com/select-input.php");
+        List<String> expectedSelectedOption = new ArrayList<String>();
+        expectedSelectedOption.add("Red");
+        expectedSelectedOption.add("Yellow");
+        expectedSelectedOption.add("Green");
+        WebElement multiColorDropdown = driver.findElement(By.id("multi-select-field"));
+        Select select = new Select(multiColorDropdown);
+        select.selectByIndex(0);
+        select.selectByIndex(1);
+        select.selectByIndex(2);
+        //select.deselectAll();
+        //select.deselectByIndex(1);
+        //select.deselectByValue("Green");
+        //select.deselectByVisibleText("Red");
+        List<WebElement> selectedOptions = select.getAllSelectedOptions();
+        List<String> actualSelectedOption = new ArrayList<String>();
+        for(int i = 0;i < selectedOptions.size();i++)
+        {
+            actualSelectedOption.add(selectedOptions.get(i).getText());
+        }
+        Assert.assertEquals(actualSelectedOption,expectedSelectedOption,"Dropdown value mismatch found in color list selection");
+        WebElement firstSelectedOption = select.getFirstSelectedOption();
+        String actualFirstSelectedOption = firstSelectedOption.getText();
+        String expectedFirstSelectedOption = "Red";
+        Assert.assertEquals(actualFirstSelectedOption,expectedFirstSelectedOption,"Dropdown value mismatch found in color list selection");
     }
 }
 
