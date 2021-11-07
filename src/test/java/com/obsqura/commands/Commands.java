@@ -1,5 +1,6 @@
 package com.obsqura.commands;
 
+import com.obsqura.utility.ExcelUtility;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -10,6 +11,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -255,7 +257,7 @@ public class Commands {
         System.out.println(actualColorValues);
         Assert.assertEquals(actualColorValues,expectedColorValues,"Dropdown value mismatch found in color list selection");
     }
-    @Test(priority = 18,enabled = true)
+    @Test(priority = 18,enabled = false)
     public void verifyMultipleDropdowns()
     {
         driver.get("https://selenium.obsqurazone.com/select-input.php");
@@ -283,6 +285,83 @@ public class Commands {
         String actualFirstSelectedOption = firstSelectedOption.getText();
         String expectedFirstSelectedOption = "Red";
         Assert.assertEquals(actualFirstSelectedOption,expectedFirstSelectedOption,"Dropdown value mismatch found in color list selection");
+    }
+    @Test(priority = 19,enabled = false)
+    public void verifyUsingJavascriptExecutor()
+    {
+        driver.get("http://demowebshop.tricentis.com/login");
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        executor.executeScript("document.getElementById('newsletter-email').value='test@gmail.com'");
+        executor.executeScript("document.getElementById('newsletter-subscribe-button').click()");
+    }
+    @Test(priority = 20,enabled = false)
+    public  void verifyStaticTable()
+    {
+        driver.get("https://www.w3schools.com/html/html_tables.asp");
+        List<WebElement> tableWebElement = driver.findElements(By.xpath("//table[@id='customers']//tr//td"));
+        List<String> tableCellValues = new ArrayList<String>();
+        for (int i =0;i<tableWebElement.size();i++)
+        {
+            tableCellValues.add(tableWebElement.get(i).getText());
+        }
+        System.out.println(tableCellValues);
+    }
+    @Test(priority = 21,enabled = false)
+    public  void verifyTableRow()
+    {
+        driver.get("https://www.w3schools.com/html/html_tables.asp");
+        List<String> expectedCellValues = new ArrayList<String>();
+        expectedCellValues.add("Island Trading");
+        expectedCellValues.add("Helen Bennett");
+        expectedCellValues.add("UK");
+        //List<WebElement> tableWebElement = driver.findElements(By.xpath("//table[@id='customers']//tr//td"));
+        List<WebElement> rowWebElement = driver.findElements(By.xpath("//table[@id='customers']//tr"));
+        List<String> tableCellValues = new ArrayList<String>();
+        for (int i =0;i<rowWebElement.size();i++)
+        {
+            List<WebElement> actualRowWebElement = driver.findElements(By.xpath("//table[@id='customers']//tr["+i+"]/td"));
+            for (int j = 0; j < actualRowWebElement.size(); j++) {
+                tableCellValues.add(actualRowWebElement.get(j).getText());
+            }
+        }
+        if (tableCellValues.get(9).equals("Island Trading")) {
+            Assert.assertEquals(tableCellValues.get(9), expectedCellValues.get(0), "expected element not available in the table");
+        }
+    }
+    @Test(priority = 22)
+    public void verifyRegistration() throws IOException {
+        driver.get("http://demo.guru99.com/test/newtours/register.php");
+        List<String> excelList = new ArrayList<String>();
+        ExcelUtility excel = new ExcelUtility();
+        String excelPath = "C:\\Users\\user\\IdeaProjects\\seleniumcommands\\test_data.xlsx";
+        String excelSheetName = "regstrationData";
+        excelList = excel.readDataFromExcel(excelPath,excelSheetName);
+        /*List<WebElement> regTableList = driver.findElements(By.xpath("//tr/td/input"));
+        for (int i = 0;i< regTableList.size();i++)
+        {
+            if(excelList.get(i).equals("INDIA")) {
+                WebElement countryDropdown = driver.findElement(By.xpath("//select[@name='country']"));
+                Select select = new Select(countryDropdown);
+                select.selectByValue(excelList.get(8));
+                continue;
+            }
+            regTableList.get(i).sendKeys(excelList.get(i));
+        }*/
+        driver.findElement(By.xpath("//input[@name='firstName']")).sendKeys(excelList.get(0));
+        driver.findElement(By.xpath("//input[@name='lastName']")).sendKeys(excelList.get(1));
+        driver.findElement(By.xpath("//input[@name='phone']")).sendKeys(excelList.get(2));
+        driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(excelList.get(3));
+        driver.findElement(By.xpath("//input[@name='address1']")).sendKeys(excelList.get(4));
+        driver.findElement(By.xpath("//input[@name='city']")).sendKeys(excelList.get(5));
+        driver.findElement(By.xpath("//input[@name='state']")).sendKeys(excelList.get(6));
+        driver.findElement(By.xpath("//input[@name='postalCode']")).sendKeys(excelList.get(7));
+        WebElement countryDropdown = driver.findElement(By.xpath("//select[@name='country']"));
+        Select select = new Select(countryDropdown);
+        select.selectByValue(excelList.get(8));
+        driver.findElement(By.xpath("//input[@name='email']")).sendKeys(excelList.get(9));
+        driver.findElement(By.xpath("//input[@name='password']")).sendKeys(excelList.get(10));
+        driver.findElement(By.xpath("//input[@name='confirmPassword']")).sendKeys(excelList.get(11));
+        driver.findElement(By.xpath("//input[@name='submit']")).click();
     }
 }
 
