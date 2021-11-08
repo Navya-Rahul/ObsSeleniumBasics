@@ -328,7 +328,7 @@ public class Commands {
             Assert.assertEquals(tableCellValues.get(9), expectedCellValues.get(0), "expected element not available in the table");
         }
     }
-    @Test(priority = 22)
+    @Test(priority = 22,enabled = false)
     public void verifyRegistration() throws IOException {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         List<String> excelList = new ArrayList<String>();
@@ -362,6 +362,32 @@ public class Commands {
         driver.findElement(By.xpath("//input[@name='password']")).sendKeys(excelList.get(10));
         driver.findElement(By.xpath("//input[@name='confirmPassword']")).sendKeys(excelList.get(11));
         driver.findElement(By.xpath("//input[@name='submit']")).click();
+    }
+    @Test(priority = 23,enabled = true)
+    public void verifyBuffaloCartLogin() throws InterruptedException {
+        driver.get("https://buffalocart.com/demo/billing/public/login");
+        WebElement userName = driver.findElement(By.id("username"));
+        userName.sendKeys("admin");
+        WebElement password = driver.findElement(By.id("password"));
+        password.sendKeys("123456");
+        WebElement submit = driver.findElement(By.xpath("//button[@class='btn btn-primary']"));
+        submit.click();
+        WebElement endTour = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm']"));
+        endTour.click();
+        WebElement userManagement = driver.findElement(By.xpath("//span[@class='title']"));
+        userManagement.click();
+        Thread.sleep(500);
+        List<String> expectedTabValues = new ArrayList<String>();
+        expectedTabValues.add("Users");
+        expectedTabValues.add("Roles");
+        expectedTabValues.add("Sales Commission Agents");
+        List<WebElement> userManagementWebElement = driver.findElements(By.xpath("//ul[@class='treeview-menu menu-open']//span"));
+        List<String> actualTabValues = new ArrayList<String>();
+        for (int i = 0;i< userManagementWebElement.size();i++)
+        {
+            actualTabValues.add(userManagementWebElement.get(i).getText());
+        }
+        Assert.assertEquals(actualTabValues,expectedTabValues,"Values are not matching");
     }
 }
 
