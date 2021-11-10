@@ -1,16 +1,19 @@
 package com.obsqura.commands;
 
 import com.obsqura.utility.ExcelUtility;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -333,20 +336,9 @@ public class Commands {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         List<String> excelList = new ArrayList<String>();
         ExcelUtility excel = new ExcelUtility();
-        String excelPath = "C:\\Users\\user\\IdeaProjects\\seleniumcommands\\test_data.xlsx";
+        String excelPath = "//src//main//resources//test_data.xlsx";
         String excelSheetName = "regstrationData";
         excelList = excel.readDataFromExcel(excelPath,excelSheetName);
-        /*List<WebElement> regTableList = driver.findElements(By.xpath("//tr/td/input"));
-        for (int i = 0;i< regTableList.size();i++)
-        {
-            if(excelList.get(i).equals("INDIA")) {
-                WebElement countryDropdown = driver.findElement(By.xpath("//select[@name='country']"));
-                Select select = new Select(countryDropdown);
-                select.selectByValue(excelList.get(8));
-                continue;
-            }
-            regTableList.get(i).sendKeys(excelList.get(i));
-        }*/
         driver.findElement(By.xpath("//input[@name='firstName']")).sendKeys(excelList.get(0));
         driver.findElement(By.xpath("//input[@name='lastName']")).sendKeys(excelList.get(1));
         driver.findElement(By.xpath("//input[@name='phone']")).sendKeys(excelList.get(2));
@@ -363,7 +355,7 @@ public class Commands {
         driver.findElement(By.xpath("//input[@name='confirmPassword']")).sendKeys(excelList.get(11));
         driver.findElement(By.xpath("//input[@name='submit']")).click();
     }
-    @Test(priority = 23,enabled = true)
+    @Test(priority = 23,enabled = false)
     public void verifyBuffaloCartLogin() throws InterruptedException {
         driver.get("https://buffalocart.com/demo/billing/public/login");
         WebElement userName = driver.findElement(By.id("username"));
@@ -388,6 +380,81 @@ public class Commands {
             actualTabValues.add(userManagementWebElement.get(i).getText());
         }
         Assert.assertEquals(actualTabValues,expectedTabValues,"Values are not matching");
+    }
+    @Test(priority = 24,enabled = false)
+    public void verifyDoubleClick()
+    {
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement doubleClickButton = driver.findElement(By.xpath("//button"));
+        Actions action = new Actions(driver);
+        action.doubleClick(doubleClickButton).build().perform();
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+    @Test(priority = 25,enabled = false)
+    public void verfyRightClick()
+    {
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
+        Actions action = new Actions(driver);
+        action.contextClick(rightClickButton).build().perform();
+    }
+    @Test(priority = 26,enabled = false)
+    public void verifyMouseOver()
+    {
+        driver.get("https://demoqa.com/menu/");
+        WebElement mainItem = driver.findElement(By.xpath("//a[text()='Main Item 2']"));
+        Actions action = new Actions(driver);
+        action.moveToElement(mainItem).build().perform();
+        //action.moveToElement(mainItem,50,50).build().perform();
+        //action.moveByOffset(100,100).build().perform();
+    }
+    @Test(priority = 27,enabled = false)
+    public void verifyDragAndDrop()
+    {
+        driver.get("https://demoqa.com/droppable");
+        WebElement dragElement = driver.findElement(By.id("draggable"));
+        WebElement dropElement = driver.findElement(By.id("droppable"));
+        Actions action = new Actions(driver);
+        action.dragAndDrop(dragElement,dropElement).build().perform();
+    }
+    @Test(priority = 28,enabled = false)
+    public void verifyDragAndDropByOffset()
+    {
+        driver.get("https://demoqa.com/dragabble");
+        WebElement dragAndDropElement = driver.findElement(By.id("dragBox"));
+        int xOffset1 = dragAndDropElement.getLocation().getX();
+        int yOffset1 = dragAndDropElement.getLocation().getY();
+        System.out.println(xOffset1);
+        System.out.println(yOffset1);
+        int x = xOffset1 + 20;
+        int y = yOffset1 + 20;
+        Actions action = new Actions(driver);
+        action.dragAndDropBy(dragAndDropElement,x,y).build().perform();
+    }
+    @Test(priority = 29,enabled = false)
+    public void verifyClickAndHold()
+    {
+        driver.get("https://demoqa.com/resizable");
+        WebElement resizableElement = driver.findElement(By.xpath("//div[@id='resizableBoxWithRestriction']//span"));
+        Actions action = new Actions(driver);
+        action.clickAndHold(resizableElement).dragAndDropBy(resizableElement,500,500).build().perform();
+    }
+    @Test(priority = 30,enabled = false)
+    public void takeScreenshot() throws IOException {
+        driver.get("https://www.google.com/");
+        TakesScreenshot takeScreenshot = (TakesScreenshot) driver;
+        File screenshot = takeScreenshot.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshot,new File("./Screenshots/"+"test.png"));
+    }
+    @Test(priority = 31,enabled = true)
+    public void verifyClickAndHoldNew()
+    {
+        driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
+        WebElement dragElement = driver.findElement(By.xpath("//li[@name='G']"));
+        WebElement dropElement = driver.findElement(By.xpath("//li[@name='A']"));
+        Actions action = new Actions(driver);
+        action.clickAndHold(dragElement).dragAndDrop(dragElement,dropElement).build().perform();
     }
 }
 

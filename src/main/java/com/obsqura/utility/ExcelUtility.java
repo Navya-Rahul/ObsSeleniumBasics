@@ -14,17 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelUtility {
-    List<String> list = new ArrayList<String>();
-    public List<String> readDataFromExcel(String excelName, String sheetName) throws IOException {
+    public static XSSFWorkbook wb;
+    public static XSSFSheet sh;
+    public static FileInputStream f;
+    public List<String> readDataFromExcel(String filePath, String sheetName) throws IOException {
         DataFormatter formatter = new DataFormatter();
-        FileInputStream file = new FileInputStream(excelName);
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheet(sheetName);
-        for(Row r : sheet) {
+        f = new FileInputStream(System.getProperty("user.dir") + filePath);
+        wb = new XSSFWorkbook(f);
+        sh = wb.getSheet(sheetName);
+        ArrayList<String> excelRows = new ArrayList<String>();
+        for(Row r : sh) {
             for (Cell c : r) {
-                list.add(formatter.formatCellValue(c));
+                excelRows.add(formatter.formatCellValue(c));
             }
         }
-        return list;
+        return excelRows;
     }
 }
