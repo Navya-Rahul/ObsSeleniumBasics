@@ -16,11 +16,15 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Commands {
@@ -477,7 +481,7 @@ public class Commands {
         String expectedTitle = "Google123";
         Assert.assertEquals(actualTitle,expectedTitle,"Invalid Title");
     }
-    @Test(priority = 33,enabled = true)
+    @Test(priority = 33,enabled = false)
     @Deprecated
     public void verifyWaitsInSelenium()
     {
@@ -487,6 +491,37 @@ public class Commands {
         WebDriverWait wait = new WebDriverWait(driver,10);
         wait.until(ExpectedConditions.visibilityOf(submit));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='submit']")));
+    }
+    @Test(priority = 34,enabled = false)
+    public void verifyRobotClass() throws AWTException {
+        driver.get("http://demowebshop.tricentis.com/register");
+        WebElement firstName = driver.findElement(By.id("FirstName"));
+        firstName.click();
+        Robot robot = new Robot();
+        robot.delay(2000);
+        robot.keyPress(KeyEvent.VK_TAB);
+        robot.delay(2000);
+        robot.keyPress(KeyEvent.VK_TAB);
+    }
+    @Test(priority = 35,enabled = true)
+    public void verifyFileUploadUsingRobotClass() throws AWTException {
+        driver.get("https://www.monsterindia.com/seeker/registration");
+        //file path passed as a parameter to StringSelection
+        StringSelection selection = new StringSelection("C:\\Users\\user\\Desktop\\obsqura\\sample.txt");
+        //Clipboard copy
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection,null);
+        WebElement chooseCV = driver.findElement(By.xpath("//span[@class='browse-text']"));
+        chooseCV.click();
+        Robot robot = new Robot();
+        robot.delay(2000);
+        //Pressing Ctrl + V
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        //Releasing Ctrl + V
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_ENTER);
     }
 }
 
